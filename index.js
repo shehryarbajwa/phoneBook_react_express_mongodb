@@ -7,6 +7,8 @@ const cors = require("cors");
 //MiddleWare
 const bodyParser = require("body-parser");
 var morgan = require("morgan");
+import Phone from './models/phone.js'
+
 
 //MiddleWare Used
 app.use(bodyParser.json());
@@ -16,29 +18,6 @@ app.use(express.static('build'))
 app.get("/api", (request, response) => {
   response.send("<p>Shehryar Bajwa </p>");
 });
-
-let persons = [
-  {
-    name: "Arto Hellas",
-    number: "040-123456",
-    id: 1
-  },
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2
-  },
-  {
-    name: "Dan Abramov",
-    number: "12-42-234234",
-    id: 3
-  },
-  {
-    name: "Shehryar Bajwa",
-    number: "6044464790",
-    id: 4
-  }
-];
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
@@ -100,6 +79,6 @@ app.post("/api/persons", (request, response) => {
   response.json(person);
 });
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT);
 console.log(`Server running on port, ${PORT}`);
