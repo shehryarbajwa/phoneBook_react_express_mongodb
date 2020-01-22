@@ -25,10 +25,6 @@ app.get("/api/persons", (request, response) => {
   .then(person => {
     response.json(person);
   })
-  .catch(error => {
-    console.log(error);
-    response.status(404).end();
-  })
 });
 
 
@@ -78,10 +74,6 @@ app.post("/api/persons", (request, response) => {
   person.save().then(person => {
     response.json(person)
   })
-  .catch(error => {
-    response.status(404).end()
-  })
-
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
