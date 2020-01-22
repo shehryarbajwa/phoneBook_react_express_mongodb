@@ -2,11 +2,11 @@ const http = require("http");
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const Phone = require("./models/phone.js")
 
 //MiddleWare
 const bodyParser = require("body-parser");
 var morgan = require("morgan");
-import Phone from './models/phone.js'
 
 
 //MiddleWare Used
@@ -19,8 +19,11 @@ app.get("/api", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Phone.find({}).then(person => {
+    response.json(person);
+  })
 });
+
 
 app.get("/api/info", (request, response) => {
   const date = Date(request.params.date);
@@ -32,22 +35,19 @@ app.get("/api/info", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find(n => n.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
-
-  reponse.json(person);
+  Phone.findById(request.params.id).then(person => {
+    response.json(person.toJSON());
+  });
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.filter(p => p.id !== id);
-  response.status(204).end();
+
+app.delete("/api/persons/:id", (request, response, next) => {
+  Phone.findByIdAndRemove(request.params.id)
+  .then(result => {
+    response.send(request.params.id + ' was deleted')
+    response.status(204).end()
+  })
+  .catch(error => next(error))
 });
 
 app.post("/api/persons", (request, response) => {
@@ -61,21 +61,15 @@ app.post("/api/persons", (request, response) => {
     return response.status(404).json({ error: "Number is missing" });
   }
 
-  const name_exists = persons.find(p => p.name === body.name);
-
-  if (name_exists) {
-    return response.status(404).json({ error: "Name already exists" });
-  }
-
-  const person = {
+  const person = new Phone ({
     name: body.name,
-    number: body.number,
-    id: Math.floor(Math.random() * Math.floor(100))
-  };
+    number: body.number
+  });
 
-  persons = persons.concat(person);
+  person.save().then(person => {
+    response.json(person)
+  })
 
-  response.json(person);
 });
 
 const PORT = process.env.PORT
