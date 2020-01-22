@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const Phone = require("./models/phone.js")
+const {requestLogger, unknownEndpoint, errorHandler} = require('./error_handling/errors.js')
 
 //MiddleWare
 const bodyParser = require("body-parser");
@@ -13,6 +14,7 @@ var morgan = require("morgan");
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static('build'))
+app.use(requestLogger);
 
 app.get("/api", (request, response) => {
   response.send("<p>Shehryar Bajwa </p>");
@@ -39,15 +41,12 @@ app.get("/api/info", (request, response) => {
   response.send(body);
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Phone.findById(request.params.id)
   .then(person => {
     response.json(person.toJSON());
   })
-  .catch(error => {
-    console.log(error);
-    response.status(404).end()
-  })
+  .catch(error => next(error))
 });
 
 
@@ -83,6 +82,21 @@ app.post("/api/persons", (request, response) => {
     response.status(404).end()
   })
 
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Note.findByIdAndUpdate(request.params.id, note)
+    .then(updatedPerson => {
+      response.json(updatedPerson.toJSON())
+    })
+    .catch(error => next(error))
 });
 
 const PORT = process.env.PORT
