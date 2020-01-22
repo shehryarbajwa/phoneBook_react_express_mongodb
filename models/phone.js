@@ -10,31 +10,21 @@ mongoose.connect(url, { useNewUrlParser: true })
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const data_name = process.argv[3]
-const data_number = process.argv[4]
-
 const phoneSchema = new mongoose.Schema({
-    name: String,
-    number: Number
-})
+  name: String,
+  number: Number
+});
 
-const Phone = mongoose.model('Phone', phoneSchema)
+//Convert ID object of mongoose to a string.
+//Mongoose inbuilt transform method converts objects to string, or string to objects
+//Delete id and v for passing easier looking UI to front-end
 
-const phone_1 = new Phone({
-    name: data_name,
-    number: data_number
-}) 
+phoneSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  }
+});
 
-phone_1.save().then(response => {
-    console.log(`Added ${data_name} ${data_number} to phoneBook`)
-    mongoose.connection.close()
-})
-
-if (process.argv.length == 3){
-    Phone.find({}).then(result => {
-        result.forEach(note => {
-          console.log(note)
-        })
-        mongoose.connection.close()
-      })
-}
+module.exports = mongoose.model("Note", phoneSchema);
