@@ -19,8 +19,13 @@ app.get("/api", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  Phone.find({}).then(person => {
+  Phone.find({})
+  .then(person => {
     response.json(person);
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(404).end();
   })
 });
 
@@ -35,9 +40,14 @@ app.get("/api/info", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  Phone.findById(request.params.id).then(person => {
+  Phone.findById(request.params.id)
+  .then(person => {
     response.json(person.toJSON());
-  });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(404).end()
+  })
 });
 
 
@@ -68,6 +78,9 @@ app.post("/api/persons", (request, response) => {
 
   person.save().then(person => {
     response.json(person)
+  })
+  .catch(error => {
+    response.status(404).end()
   })
 
 });
