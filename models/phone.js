@@ -27,4 +27,4 @@ phoneSchema.set("toJSON", {
   }
 });
 
-module.exports = mongoose.model("Note", phoneSchema);
+module.exports = mongoose.model("Phone", phoneSchema);
