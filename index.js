@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const Phone = require("./models/phone.js")
-const {requestLogger, unknownEndpoint, errorHandler} = require('./error_handling/errors.js')
+const {requestLogger, unknownEndpoint, errorHandler} = require("../phoneBook_react_express_mongodb/notifications/errors.js")
 
 //MiddleWare
 const bodyParser = require("body-parser");
@@ -71,9 +71,12 @@ app.post("/api/persons", (request, response) => {
     number: body.number
   });
 
-  person.save().then(person => {
+  person.
+  save()
+  .then(person => {
     response.json(person)
   })
+  .catch(error => console.log(error))
 });
 
 app.put("/api/persons/:id", (request, response, next) => {

@@ -1,5 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator');
 const url = process.env.MONGODB_URI
 
 mongoose.connect(url, { useNewUrlParser: true })
@@ -11,9 +12,10 @@ mongoose.connect(url, { useNewUrlParser: true })
   })
 
 const phoneSchema = new mongoose.Schema({
-  name: String,
-  number: Number
+  name: { type: String, required: true, unique: true},
+  number: { type: Number, minlength: 8 ,required: true, unique: true}
 });
+phoneSchema.plugin(uniqueValidator);
 
 //Convert ID object of mongoose to a string.
 //Mongoose inbuilt transform method converts objects to string, or string to objects
