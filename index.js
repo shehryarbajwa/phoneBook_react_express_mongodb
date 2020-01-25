@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const Phone = require("./models/phone.js")
-const {requestLogger, unknownEndpoint, errorHandler} = require("../phoneBook_react_express_mongodb/notifications/errors.js")
+const {requestLogger, unknownEndpoint, errorHandler} = require('./notifications/errors.js')
 
 //MiddleWare
 const bodyParser = require("body-parser");
