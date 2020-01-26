@@ -1,6 +1,13 @@
 const phoneRouter = require('express').Router()
 const Phone = require('../models/phone.js')
 
+phoneRouter.get('/', (request, response) => {
+  Phone.find({}).then(persons => {
+    response.json(persons.map(person => person.toJSON()))
+  })
+})
+
+
 phoneRouter.get('/:id', (request, response, next) => {
   Phone.findById(request.params.id)
     .then(person => {
@@ -56,3 +63,5 @@ phoneRouter.put('/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
+
+module.exports = phoneRouter
