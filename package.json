@@ -4,8 +4,8 @@
   "description": "Phone book's backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "test": "NODE_ENV=production jest --verbose",
+    "start": "NODE_ENV=production node index.js",
     "lint": "eslint .",
     "deploy": "git push heroku master"
   },
@@ -21,6 +21,11 @@
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "nodemon": "^2.0.2"
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

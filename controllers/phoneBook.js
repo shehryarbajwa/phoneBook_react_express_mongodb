@@ -1,67 +1,71 @@
-const phoneRouter = require('express').Router()
-const Phone = require('../models/phone.js')
+const phoneRouter = require("express").Router();
+const Phone = require("../models/phone.js");
 
-phoneRouter.get('/', (request, response) => {
-  Phone.find({}).then(persons => {
-    response.json(persons.map(person => person.toJSON()))
-  })
-})
+phoneRouter.get("/", async (request, response, next) => {
+  try {
+    const person = await Phone.find({});
+    response.json(person.map(persons => persons.toJSON()));
+  } catch (exception) {
+    next(exception);
+  }
+});
 
+phoneRouter.get("/:id", async (request, response, next) => {
+  try {
+    const person = await Phone.findById(`/api/persons/${request.params.id}`);
+    response.json(person.toJSON());
+  } catch (exception) {
+    next(exception);
+  }
+});
 
-phoneRouter.get('/:id', (request, response, next) => {
-  Phone.findById(request.params.id)
-    .then(person => {
-      response.json(person.toJSON())
-    })
-    .catch(error => next(error))
-})
+phoneRouter.delete("/:id", async (request, response, next) => {
+  try{
+    const person = await Phone.findByIdAndRemove(`/api/persons/${request.params.id}`)
+    response.status(204).end()
+  } catch(exception){
+    next(exception)
+  }
+});
 
-phoneRouter.delete('/:id', (request, response, next) => {
-  Phone.findByIdAndRemove(request.params.id)
-    .then(() => {
-      response.send(request.params.id + 'was deleted')
-      response.status(204).end()
-    })
-    .catch(error => next(error))
-})
-
-phoneRouter.post('/', (request, response) => {
-  const body = request.body
+phoneRouter.post("/", async (request, response, next) => {
+  const body = request.body;
 
   if (!body.name) {
-    return response.status(404).json({ error: 'Name is missing' })
+    return response.status(404).json({ error: "Name is missing" });
   }
 
   if (!body.number) {
-    return response.status(404).json({ error: 'Number is missing' })
+    return response.status(404).json({ error: "Number is missing" });
   }
 
   const person = new Phone({
     name: body.name,
     number: body.number
-  })
+  });
 
-  person
-    .save()
-    .then(person => {
-      response.json(person)
-    })
-    .catch(error => console.log(error))
+  try {
+    const savedPerson = await person.save()
+    response.status(201).json(savedPerson.toJSON())
+  } catch (exception) {
+    next(exception)
+  }
 });
 
-phoneRouter.put('/:id', (request, response, next) => {
-  const body = request.body
+phoneRouter.put("/:id", async (request, response, next) => {
+  const body = request.body;
 
   const person = {
     name: body.name,
     number: body.number
+  };
+
+  try{
+    const updatePerson = await Phone.findByIdAndUpdate(`/api/persons/${request.params.id}`, person)
+    response.json(updatePerson.toJSON())
+  } catch (exception) {
+    next(exception)
   }
+});
 
-  Phone.findByIdAndUpdate(request.params.id, person)
-    .then(updatedPerson => {
-      response.json(updatedPerson.toJSON())
-    })
-    .catch(error => next(error))
-})
-
-module.exports = phoneRouter
+module.exports = phoneRouter;
