@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
     ]
 })
 
+//Convert ID object of mongoose to a string.
 userSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
