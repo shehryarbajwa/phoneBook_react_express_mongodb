@@ -23,7 +23,6 @@ const phoneSchema = new mongoose.Schema({
 phoneSchema.plugin(uniqueValidator);
 
 //Convert ID object of mongoose to a string.
-//Mongoose inbuilt transform method converts objects to string, or string to objects
 
 phoneSchema.set("toJSON", {
   transform: (document, returnedObject) => {
