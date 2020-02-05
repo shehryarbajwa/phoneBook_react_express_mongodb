@@ -1,7 +1,9 @@
 POST http://localhost:3001/api/persons/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkphY29iRiIsImlkIjoiNWUzYjM0NDcwNGVjMzEwZmMxZjMzMDEzIiwiaWF0IjoxNTgwOTQ1NTcxfQ.nCYJiLpkwJHsnjbxxNUNrKTqYtXb3RYqrb_GbP1B3vc
 
 {
-    "name":"Jacob",
-    "number": 60012121005
+    "name":"Aamer Bajwa",
+    "number": 923008604747,
+    "userId":"5e3b2cf6cb7537077ce38671"
 }
