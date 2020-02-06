@@ -1,19 +1,19 @@
 const phoneRouter = require("express").Router();
 const Phone = require("../models/phone.js");
 const User = require("../models/users.js");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
+  const authorization = request.get("authorization");
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7);
   }
-  return null
-}
+  return null;
+};
 
 phoneRouter.get("/", async (request, response, next) => {
   try {
-    const person = await Phone.find({}).populate("user", {username: 1})
+    const person = await Phone.find({}).populate("user", { username: 1 });
     response.json(person.map(persons => persons.toJSON()));
   } catch (exception) {
     next(exception);
@@ -51,25 +51,25 @@ phoneRouter.post("/", async (request, response, next) => {
   if (!body.number) {
     return response.status(404).json({ error: "Number is missing" });
   }
-  
-  const token = getTokenFrom(request)
-
-  const user = await User.findById(body.userId);
-
-  const person = new Phone({
-    name: body.name,
-    number: body.number,
-    user: user._id
-  });
-
-  console.log("user is", user);
 
   try {
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    if (!token || !decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
+    const token = getTokenFrom(request);
+
+    const user = await User.findById(body.userId);
+
+    const person = new Phone({
+      name: body.name,
+      number: body.number,
+      user: user._id
+    });
+
+    console.log("user is", user);
     
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: "token missing or invalid" });
+    }
+
     const savedPerson = await person.save();
     user.contacts = user.contacts.concat(savedPerson.id);
 
@@ -96,7 +96,7 @@ phoneRouter.put("/:id", async (request, response, next) => {
     const updatePerson = await Phone.findByIdAndUpdate(
       request.params.id,
       person
-    ).populate('user', { username: 1})
+    ).populate("user", { username: 1 });
     response.json(updatePerson.toJSON());
   } catch (exception) {
     next(exception);
