@@ -62,8 +62,6 @@ phoneRouter.post("/", async (request, response, next) => {
       number: body.number,
       user: user._id
     });
-
-    console.log("user is", user);
     
     const decodedToken = jwt.verify(token, process.env.SECRET);
     if (!token || !decodedToken.id) {
