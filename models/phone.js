@@ -24,7 +24,6 @@ phoneSchema.plugin(uniqueValidator);
 
 //Convert ID object of mongoose to a string.
 //Mongoose inbuilt transform method converts objects to string, or string to objects
-//Delete id and v for passing easier looking UI to front-end
 
 phoneSchema.set("toJSON", {
   transform: (document, returnedObject) => {
