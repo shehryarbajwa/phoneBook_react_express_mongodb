@@ -43,6 +43,10 @@ phoneRouter.delete("/:id", async (request, response, next) => {
 
 phoneRouter.post("/", async (request, response, next) => {
   const body = request.body;
+  const token = getTokenFrom(request);
+
+  console.log('this is your token', token);
+  
 
   if (!body.name) {
     return response.status(404).json({ error: "Name is missing" });
@@ -53,23 +57,25 @@ phoneRouter.post("/", async (request, response, next) => {
   }
 
   try {
-    const token = getTokenFrom(request);
+    
+    const decodedToken = jwt.verify(token, process.env.SECRET)
 
-    const user = await User.findById(body.userId);
+    const user = await User.findById(decodedToken.id);
+
+    console.log(user)
 
     const person = new Phone({
       name: body.name,
       number: body.number,
-      user: user._id
+      user: user.id
     });
-    
-    const decodedToken = jwt.verify(token, process.env.SECRET);
+
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: "token missing or invalid" });
     }
 
     const savedPerson = await person.save();
-    user.contacts = user.contacts.concat(savedPerson.id);
+    user.contacts = user.contacts.concat(savedPerson.name);
 
     const result = await Phone.findById(savedPerson.id).populate("user", {
       username: 1
