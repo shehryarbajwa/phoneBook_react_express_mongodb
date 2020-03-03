@@ -22,13 +22,7 @@ usersRouter.post("/", async (request, response, next) => {
 
     const userExists = await User.find({username : user.username})
 
-    if(userExists){
-      console.log('this user exists')
-    }
-
     const savedUser = await user.save();
-
-    console.log(savedUser);
 
     response.json(savedUser.toJSON());
   } catch (exception) {
